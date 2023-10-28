@@ -23,7 +23,6 @@ public class FileHandler {
             EntryHandler.handleFileInput("list");
         }
         BootUp.bootUpTwo();
-        EntryHandler.handleManualInput();
     }
 
     public static boolean checkFileExistence() {

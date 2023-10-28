@@ -16,8 +16,8 @@ public class EntryList {
         return entries.size();
     }
 
-    public static void addEntry(String date, String species, String name, String remark) {
-        entries.add(new Entry(date, species, name, remark));
+    public static void addEntry(Entry entry) {
+        entries.add(entry);
     }
 
     public static void deleteEntry(int numberInput){

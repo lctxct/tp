@@ -7,14 +7,21 @@ import seedu.wildwatch.operation.Ui;
  * Command class for deleting entry in EntryList
  */
 public class DeleteCommand extends Command {
+
+    public static final String COMMAND_WORD = "delete";
+
+    private final int deleteIdx;
+
+    public DeleteCommand(int numberInput) {
+        deleteIdx = numberInput;
+    }
+
     /**
      * Deletes entry in the EntryList
-     *
-     * @param numberInput
      */
-    public static void deleteEntry(int numberInput) {
+    public void execute() {
         Ui.entryRemovedMessagePrinter();
-        EntryList.deleteEntry(numberInput);
+        EntryList.deleteEntry(deleteIdx);
         Ui.entryCountPrinter();
     }
 }

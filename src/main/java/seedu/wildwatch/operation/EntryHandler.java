@@ -4,6 +4,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import seedu.wildwatch.command.Command;
 import seedu.wildwatch.command.AddCommand;
 import seedu.wildwatch.command.ByeCommand;
 import seedu.wildwatch.command.DeleteCommand;
@@ -11,7 +12,9 @@ import seedu.wildwatch.command.HelpCommand;
 import seedu.wildwatch.command.ListCommand;
 import seedu.wildwatch.entry.EntryList;
 import seedu.wildwatch.exception.IncorrectInputException;
+import seedu.wildwatch.exception.UnknownDateFormatException;
 import seedu.wildwatch.exception.UnknownInputException;
+import seedu.wildwatch.operation.parser.AddCommandParser;
 
 
 public class EntryHandler {
@@ -29,7 +32,7 @@ public class EntryHandler {
                 Ui.printHorizontalLines();
                 Ui.helpRequestMessagePrinter();
                 Ui.printHorizontalLines();
-                HelpCommand.printHelpMessage();
+                new HelpCommand().execute();
             } else {
                 Ui.printHorizontalLines();
                 ErrorHandler.handleError(inputBuffer);
@@ -37,10 +40,10 @@ public class EntryHandler {
             }
             EntryList.saveEntry();
         }
-        ByeCommand.exitProgram();
+        new ByeCommand().execute();
     }
 
-    public static void handleFileInput(String lineOfFile) {
+    public static void handleFileInput(String lineOfFile) throws UnknownDateFormatException {
         try {
             EntryHandler.handleEntry(lineOfFile, true);
         } catch (UnknownInputException | IncorrectInputException exception) {
@@ -51,10 +54,12 @@ public class EntryHandler {
     }
 
     public static void handleEntry(String inputBuffer, boolean isFromFile)
-            throws UnknownInputException, IncorrectInputException {
+            throws UnknownInputException, IncorrectInputException, UnknownDateFormatException {
         LOGGER.log(Level.INFO, "Managing entry for input: {0}", inputBuffer);
+
         Scanner bufferScanner = new Scanner(inputBuffer);     //Scanner for the buffer
         String firstWord = bufferScanner.next();              //Stores first word in the input
+
         assert firstWord != null && !firstWord.isEmpty() : "First word shouldn't be null or empty";
 
         boolean hasInputInteger = bufferScanner.hasNextInt(); //Indicates that some integer was input
@@ -65,18 +70,28 @@ public class EntryHandler {
         }
 
         //Functionalities
-        if (isFromFile && firstWord.equals("add")) {
-            AddCommand.addEntry(inputBuffer, isFromFile);
-        } else if (firstWord.equals("add")) {
-            AddCommand.addEntry(inputBuffer, false);
-        } else if (firstWord.equals("delete") && hasInputInteger && !bufferScanner.hasNext()) {
-            assert numberInput > 0 : "Entry number to delete should be positive";
-            DeleteCommand.deleteEntry(numberInput);
-        } else if (inputBuffer.equals("list")) {
-            ListCommand.listEntry(isFromFile);
-        } else {
+        Command command;
+
+        switch (firstWord) {
+        case AddCommand.COMMAND_WORD:
+            command = new AddCommandParser().parse(inputBuffer);
+            break;
+        case ListCommand.COMMAND_WORD:
+            command = new ListCommand();
+            break;
+        case DeleteCommand.COMMAND_WORD:
+            command = new DeleteCommand(numberInput);
+            break;
+        default:
             LOGGER.log(Level.WARNING, "Unknown input received: {0}. Throwing exception.", inputBuffer);
             throw new UnknownInputException(); //Unrecognizable by Parser
+        }
+
+        if (isFromFile) {
+            command.setIsFromFile();
+            command.execute();
+        } else {
+            command.execute();
         }
     }
 }

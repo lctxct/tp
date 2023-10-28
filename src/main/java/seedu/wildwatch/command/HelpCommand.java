@@ -1,6 +1,9 @@
 package seedu.wildwatch.command;
 
 public class HelpCommand extends Command {
+
+    public static final String COMMAND_WORD = "help";
+
     /**
      * Requires UPDATE
      */
@@ -63,7 +66,7 @@ public class HelpCommand extends Command {
     /**
      * Prints out help page
      */
-    public static void printHelpMessage() {
+    public void execute() {
         System.out.println(helpPage);
     }
 

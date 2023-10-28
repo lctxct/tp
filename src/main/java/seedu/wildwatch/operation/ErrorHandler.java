@@ -60,10 +60,13 @@ public class ErrorHandler {
     }
 
     public static void checkError(String inputBuffer) throws EmptyInputException, EmptyAddException,
-            EmptyListException, EmptyDeleteException, EntryNotFoundException, UnknownDateFormatException {
+            EmptyListException, EmptyDeleteException, EntryNotFoundException {
+
         assert inputBuffer != null : "Input buffer should not be null.";
+
         Scanner bufferScanner = new Scanner(inputBuffer);   //Scanner for the buffer
         String firstWord;                                   //First word of input
+
         int numberInput = DEFAULT_NUMBER_INPUT;
         if (!bufferScanner.hasNext()) {                     //Checks for the case when there is no input
             throw new EmptyInputException();
@@ -74,11 +77,7 @@ public class ErrorHandler {
             numberInput = bufferScanner.nextInt();
         }
 
-        if (firstWord.equals("add") && !bufferScanner.hasNext()) {
-            throw new EmptyAddException();
-        } else if (firstWord.equals("add") && !(DateHandler.isDateValid(inputBuffer))) {
-            throw new UnknownDateFormatException();
-        } else if (firstWord.equals("delete") && numberInput == DEFAULT_NUMBER_INPUT) {
+        if (firstWord.equals("delete") && numberInput == DEFAULT_NUMBER_INPUT) {
             throw new EmptyDeleteException();
         } else if (firstWord.equals("delete") && (numberInput < 1 || numberInput > EntryList.getArraySize())) {
             throw new EntryNotFoundException();

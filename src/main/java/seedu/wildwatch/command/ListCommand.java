@@ -7,12 +7,20 @@ import seedu.wildwatch.operation.Ui;
  * Command class for listing all entries in EntryList
  */
 public class ListCommand extends Command {
+
+    public static final String COMMAND_WORD = "list";
+
+    private boolean isFromFile = false;
+
+    @Override
+    public void setIsFromFile() {
+        isFromFile = true;
+    }
+
     /**
      * Lists out all entry in EntryList
-     *
-     * @param isFromFile
      */
-    public static void listEntry(boolean isFromFile) {
+    public void execute() {
         if (!isFromFile) {
             Ui.listMessagePrinter();
         }
